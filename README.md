@@ -1,6 +1,6 @@
 # Agent_Memory
 
-Research notes, paper summaries, architectural analysis, and original proposals on **memory for AI agents**.
+Research notes, paper summaries, architectural analysis, experiments, and original proposals on **memory for AI agents**.
 
 This repository studies agent memory across the full stack: from LLM inference-time memory such as KV cache, to in-context memory, retrieval-augmented generation, long-term episodic memory, semantic memory, procedural memory, reflection, shared multi-agent memory, and self-maintaining memory systems.
 
@@ -9,6 +9,25 @@ This repository studies agent memory across the full stack: from LLM inference-t
 How should AI agents remember, forget, retrieve, update, verify, and use information over long periods of time?
 
 The working hypothesis of this repo is that agent memory is becoming less like a simple vector database and more like a managed cognitive operating system: layered, structured, self-editing, security-aware, and optimized across latency, cost, reliability, and trust.
+
+## Current Research Hub
+
+All long-form research artifacts live under [`research/`](research/). Start there for the organized reading path.
+
+Important entry points:
+
+- [`research/README.md`](research/README.md) — research hub and navigation
+- [`research/papers/foundational_papers.md`](research/papers/foundational_papers.md) — foundational papers
+- [`research/papers/recent_papers.md`](research/papers/recent_papers.md) — recent papers and directions
+- [`research/architecture/memory_taxonomy.md`](research/architecture/memory_taxonomy.md) — memory type taxonomy
+- [`research/architecture/memory_hierarchy.md`](research/architecture/memory_hierarchy.md) — tiered memory architecture
+- [`research/architecture/kv_cache_and_inference_memory.md`](research/architecture/kv_cache_and_inference_memory.md) — KV cache and inference-time memory
+- [`research/problems/pain_points.md`](research/problems/pain_points.md) — real-world problems for agent users
+- [`research/proposals/memory_os.md`](research/proposals/memory_os.md) — proposed memory operating-system architecture
+- [`research/experiments/prototype_plan.md`](research/experiments/prototype_plan.md) — experimental architecture
+- [`research/experiments/benchmark_ideas.md`](research/experiments/benchmark_ideas.md) — memory robustness benchmarks
+- [`research/roadmap.md`](research/roadmap.md) — formal research roadmap
+- [`research/paper_draft.md`](research/paper_draft.md) — paper draft outline
 
 ## Research Scope
 
@@ -72,25 +91,6 @@ Semantic + procedural memory
 Cold archival storage
 ```
 
-## Initial Reading List
-
-Foundational papers:
-
-- Generative Agents: Interactive Simulacra of Human Behavior
-- MemGPT: Towards LLMs as Operating Systems
-- MemoryBank: Enhancing Large Language Models with Long-Term Memory
-- Reflexion: Language Agents with Verbal Reinforcement Learning
-- Voyager: An Open-Ended Embodied Agent with Large Language Models
-
-Recent directions:
-
-- A Survey on the Memory Mechanism of LLM-based Agents
-- On the Structural Memory of LLM Agents
-- Memory Sharing for LLM-based Agents
-- How Memory Management Impacts LLM Agents
-- A-Mem: Agentic Memory for LLM Agents
-- AgentPoison: Red-teaming LLM Agents via Memory Poisoning
-
 ## Working Problems
 
 This repo is especially interested in fine-grained problems such as:
@@ -118,35 +118,6 @@ The next generation of agent memory systems will likely be:
 - **Multi-modal**: memory spans text, code, documents, images, audio, tools, and actions
 - **Multi-tiered**: fast volatile memory and slow durable memory work together
 
-## Proposed Repository Layout
-
-```text
-.
-├── README.md
-├── papers/
-│   ├── foundational_papers.md
-│   ├── recent_papers.md
-│   └── survey_notes.md
-├── architecture/
-│   ├── memory_taxonomy.md
-│   ├── kv_cache_and_inference_memory.md
-│   ├── vector_vs_graph_memory.md
-│   └── memory_hierarchy.md
-├── problems/
-│   ├── pain_points.md
-│   ├── memory_poisoning.md
-│   ├── contradiction_resolution.md
-│   └── evaluation_benchmarks.md
-├── proposals/
-│   ├── memory_os.md
-│   ├── causal_memory_graphs.md
-│   ├── trust_weighted_retrieval.md
-│   └── adaptive_forgetting.md
-└── experiments/
-    ├── benchmark_ideas.md
-    └── prototype_plan.md
-```
-
 ## Status
 
-Early-stage research repository. The immediate next step is to add structured paper summaries, extract design patterns from the literature, and turn the major unresolved problems into concrete architecture proposals and experiments.
+Early-stage research repository. The current structure is consolidated under `research/` so papers, architecture notes, problem analyses, proposed solutions, experiments, roadmap material, and paper-draft material do not diverge across parallel folders.
