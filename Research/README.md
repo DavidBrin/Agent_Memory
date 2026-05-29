@@ -1,6 +1,6 @@
 # Research Hub
 
-This directory is the single canonical home for research notes in the Agent_Memory repository. It connects paper summaries, architecture notes, problem analyses, proposed solutions, experiments, and draft-writing materials.
+This directory is the single canonical home for research notes in the Agent_Memory repository. It connects paper summaries, architecture notes, problem analyses, and proposed solutions.
 
 ## How to Read This Repository
 
@@ -11,13 +11,12 @@ A useful reading order is:
 3. Read [`papers/recent_papers.md`](papers/recent_papers.md) for 2024-2026 developments.
 4. Read [`architecture/memory_taxonomy.md`](architecture/memory_taxonomy.md), [`architecture/memory_hierarchy.md`](architecture/memory_hierarchy.md), and [`architecture/kv_cache_and_inference_memory.md`](architecture/kv_cache_and_inference_memory.md) for conceptual grounding.
 5. Read [`problems/pain_points.md`](problems/pain_points.md) for real-world user and system failures.
-6. Read [`proposals/memory_os.md`](proposals/memory_os.md) for the main synthesis proposal.
-7. Read [`roadmap.md`](roadmap.md), [`experiments/prototype_plan.md`](experiments/prototype_plan.md), [`experiments/benchmark_ideas.md`](experiments/benchmark_ideas.md), and [`paper_draft.md`](paper_draft.md) for next steps.
+6. Read [`proposed_solutions.md`](proposed_solutions.md) for the main synthesis proposal.
 
 ## Canonical Repository Organization
 
 ```text
-research/
+Research/
 ├── README.md
 ├── papers/
 │   ├── foundational_papers.md
@@ -29,25 +28,19 @@ research/
 │   ├── kv_cache_and_inference_memory.md
 │   └── vector_vs_graph_memory.md
 ├── problems/
-│   ├── pain_points.md
-│   ├── memory_poisoning.md
-│   ├── contradiction_resolution.md
-│   └── evaluation_benchmarks.md
-├── proposals/
-│   ├── memory_os.md
-│   ├── causal_memory_graphs.md
-│   ├── trust_weighted_retrieval.md
-│   └── adaptive_forgetting.md
-├── experiments/
-│   ├── prototype_plan.md
-│   └── benchmark_ideas.md
-├── roadmap.md
-└── paper_draft.md
+│   └── pain_points.md
+├── pain-points.md
+├── proposed_solutions.md
+├── current_approaches.md
+├── papers_summaries.md
+├── evolution.md
+├── kv_cache_inference.md
+└── memory_taxonomy.md
 ```
 
 ## Deduplication Rule
 
-All long-form research artifacts should live under `research/`. Top-level files should be limited to project navigation and repository-level metadata. Empty folders are not preserved by Git, so each folder is tracked through at least one markdown file.
+All long-form research artifacts should live under `Research/`. Top-level files should be limited to project navigation and repository-level metadata.
 
 ## Current Thesis
 

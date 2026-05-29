@@ -1,0 +1,16 @@
+#!/usr/bin/env sh
+set -eu
+
+ROOT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
+VENV_DIR="$ROOT_DIR/.venv"
+PYTHON_BIN="${PYTHON:-python3}"
+
+if [ ! -x "$VENV_DIR/bin/python" ]; then
+  "$PYTHON_BIN" -m venv "$VENV_DIR"
+fi
+
+if [ ! -x "$VENV_DIR/bin/graphify" ]; then
+  "$VENV_DIR/bin/python" -m pip install -r "$ROOT_DIR/requirements-dev.txt"
+fi
+
+exec "$VENV_DIR/bin/graphify" "$@"

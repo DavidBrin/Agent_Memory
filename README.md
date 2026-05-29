@@ -12,22 +12,38 @@ The working hypothesis of this repo is that agent memory is becoming less like a
 
 ## Current Research Hub
 
-All long-form research artifacts live under [`research/`](research/). Start there for the organized reading path.
+All long-form research artifacts live under [`Research/`](Research/). Start there for the organized reading path.
 
 Important entry points:
 
-- [`research/README.md`](research/README.md) — research hub and navigation
-- [`research/papers/foundational_papers.md`](research/papers/foundational_papers.md) — foundational papers
-- [`research/papers/recent_papers.md`](research/papers/recent_papers.md) — recent papers and directions
-- [`research/architecture/memory_taxonomy.md`](research/architecture/memory_taxonomy.md) — memory type taxonomy
-- [`research/architecture/memory_hierarchy.md`](research/architecture/memory_hierarchy.md) — tiered memory architecture
-- [`research/architecture/kv_cache_and_inference_memory.md`](research/architecture/kv_cache_and_inference_memory.md) — KV cache and inference-time memory
-- [`research/problems/pain_points.md`](research/problems/pain_points.md) — real-world problems for agent users
-- [`research/proposals/memory_os.md`](research/proposals/memory_os.md) — proposed memory operating-system architecture
-- [`research/experiments/prototype_plan.md`](research/experiments/prototype_plan.md) — experimental architecture
-- [`research/experiments/benchmark_ideas.md`](research/experiments/benchmark_ideas.md) — memory robustness benchmarks
-- [`research/roadmap.md`](research/roadmap.md) — formal research roadmap
-- [`research/paper_draft.md`](research/paper_draft.md) — paper draft outline
+- [`Research/README.md`](Research/README.md) — research hub and navigation
+- [`Research/papers/foundational_papers.md`](Research/papers/foundational_papers.md) — foundational papers
+- [`Research/papers/recent_papers.md`](Research/papers/recent_papers.md) — recent papers and directions
+- [`Research/architecture/memory_taxonomy.md`](Research/architecture/memory_taxonomy.md) — memory type taxonomy
+- [`Research/architecture/memory_hierarchy.md`](Research/architecture/memory_hierarchy.md) — tiered memory architecture
+- [`Research/architecture/kv_cache_and_inference_memory.md`](Research/architecture/kv_cache_and_inference_memory.md) — KV cache and inference-time memory
+- [`Research/problems/pain_points.md`](Research/problems/pain_points.md) — real-world problems for agent users
+- [`Research/proposed_solutions.md`](Research/proposed_solutions.md) — proposed memory operating-system architecture
+
+## Graphify Indexing
+
+This repo includes a portable Graphify wrapper for building and querying a local knowledge graph over the research docs.
+
+```bash
+scripts/graphify update .
+scripts/graphify query "What is the proposed memory architecture?"
+scripts/graphify explain "Trustworthy Memory OS"
+```
+
+The first run creates `.venv/` and installs the pinned development dependency from [`requirements-dev.txt`](requirements-dev.txt). Generated graph files live in `graphify-out/` and are intentionally ignored by Git.
+
+For Codex auto-check hooks on your machine, run:
+
+```bash
+scripts/graphify codex install
+```
+
+That writes local `.codex/` hook config with machine-specific paths, so it is not committed.
 
 ## Research Scope
 
@@ -120,4 +136,4 @@ The next generation of agent memory systems will likely be:
 
 ## Status
 
-Early-stage research repository. The current structure is consolidated under `research/` so papers, architecture notes, problem analyses, proposed solutions, experiments, roadmap material, and paper-draft material do not diverge across parallel folders.
+Early-stage research repository. The current structure is consolidated under `Research/` so papers, architecture notes, problem analyses, and proposed solutions do not diverge across parallel folders.
