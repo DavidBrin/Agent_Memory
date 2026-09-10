@@ -52,7 +52,8 @@ class EventLog:
             self.path.parent.mkdir(parents=True, exist_ok=True)
             with self.path.open("a", encoding="utf-8") as handle:
                 handle.write(json.dumps(entry, sort_keys=True) + "\n")
-            self._write_anchor()
+            if self.anchor_path and self.anchor_path.exists():
+                self._write_anchor()
         return entry
 
     # -- reading ------------------------------------------------------------

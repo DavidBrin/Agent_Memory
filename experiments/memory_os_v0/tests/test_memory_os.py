@@ -280,6 +280,24 @@ class PersistenceTests(unittest.TestCase):
 
 
 class EventLogIntegrityTests(unittest.TestCase):
+    def test_append_does_not_recreate_missing_anchor_on_existing_log(self):
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "events.jsonl"
+            log = EventLog(path)
+            log.append(make_event(at(0), "s1", "user", "message", "First durable fact."))
+            anchor_path = path.with_name(f"{path.name}.anchor.json")
+            anchor_path.unlink()
+
+            reopened = EventLog(path)
+            reopened.append(make_event(at(1), "s1", "user", "message", "Second durable fact."))
+            ok, error = reopened.verify()
+
+            self.assertFalse(ok)
+            self.assertIn("anchor", error)
+            self.assertFalse(anchor_path.exists())
+
     def test_verify_detects_missing_anchor_on_existing_log(self):
         import tempfile
 
