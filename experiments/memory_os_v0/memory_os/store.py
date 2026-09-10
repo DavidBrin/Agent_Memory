@@ -120,9 +120,15 @@ class MemoryStore:
             record = self.records[current]
             # Earlier versions of the same claim.
             frontier.extend(record.supersedes)
-            # Later versions, and anything distilled from this record.
+            # Later versions, and anything distilled from this record. The
+            # relation is stored on the newer record, so follow both the
+            # back-link and the newer record's explicit supersedes edge.
             for other in self.records.values():
-                if other.superseded_by == current or current in other.derived_from:
+                if (
+                    other.superseded_by == current
+                    or current in other.supersedes
+                    or current in other.derived_from
+                ):
                     frontier.append(other.memory_id)
         for dead in doomed:
             self.records.pop(dead, None)

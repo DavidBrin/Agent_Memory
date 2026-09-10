@@ -96,6 +96,11 @@ INSTRUCTION_PATTERNS: tuple[tuple[str, re.Pattern], ...] = (
     ("exfiltration", re.compile(r"\b(send|email|post|upload|forward)\b.{0,40}\b(to|at)\b\s*\S+@|\bexfiltrat", re.I)),
     ("credential_demand", re.compile(r"\b(reveal|disclose|print|share)\b.{0,25}\b(key|token|password|credential|secret)s?\b", re.I)),
     ("imperative_always", re.compile(r"\byou (?:must|should) (?:always|never)\b", re.I)),
+    # A bare sentence-initial "Always/Never <verb>" is a standing directive
+    # even when it omits an explicit "you must" subject. Keep this scoped to
+    # sentence starts so first-person preferences ("I always use …") remain
+    # distinguishable from instructions.
+    ("standing_imperative", re.compile(r"(?:^|[.!?]\s+)(?:please\s+)?(?:always|never)\s+\w+", re.I)),
     # Narrow on purpose: "first run the benchmark" is a legitimate procedural
     # memory, so bare imperatives are not evidence of an injection attempt.
     ("shell_command", re.compile(r"\b(?:curl|wget|sudo|chmod|nc)\b\s+\S|\brm\s+-rf\b|\bbash\s+-c\b", re.I)),

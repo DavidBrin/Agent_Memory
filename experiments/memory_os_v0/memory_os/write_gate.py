@@ -112,16 +112,19 @@ def _contains(text: str, markers: tuple[str, ...]) -> str | None:
     return None
 
 
-def _claim_key(memory_type: str, entities: list[str]) -> str | None:
+def _claim_key(
+    memory_type: str, entities: list[str], entity_hints: tuple[str, ...] = ()
+) -> str | None:
     """Identity of a claim across time.
 
     Episodic records never get a claim key: two events at different times are
     two facts, not two versions of one fact. Everything else is a statement
     about some entity that a later statement can revise.
     """
-    if memory_type == "episodic" or not entities:
+    identity_entities = sorted({hint.lower() for hint in entity_hints}) or entities
+    if memory_type == "episodic" or not identity_entities:
         return None
-    return f"{memory_type}:{'|'.join(sorted(entities))}"
+    return f"{memory_type}:{'|'.join(sorted(identity_entities))}"
 
 
 class WriteGate:
@@ -180,7 +183,7 @@ class WriteGate:
                 flags.append("requires_consent")
 
         # 3. Type routing.
-        memory_type, type_reason = self._route(event, content)
+        memory_type, type_reason = self._route(event, content, entities)
         reasons.append(type_reason)
 
         # 4. Scope. Session markers block promotion to durable memory.
@@ -197,7 +200,11 @@ class WriteGate:
         confidence = self._confidence(event, memory_type, scope)
 
         # 6. Contradiction against currently valid memory of the same claim.
-        claim_key = _claim_key(memory_type, entities) if scope == "durable" else None
+        claim_key = (
+            _claim_key(memory_type, entities, event.entity_hints)
+            if scope == "durable"
+            else None
+        )
         supersedes: list[str] = []
         if claim_key:
             for existing in self.store.by_claim_key(claim_key, as_of=event.ts):
@@ -230,10 +237,24 @@ class WriteGate:
             policy_flags=flags,
         )
 
-    def _route(self, event: MemoryEvent, content: str) -> tuple[str, str]:
+    def _route(
+        self, event: MemoryEvent, content: str, entities: list[str]
+    ) -> tuple[str, str]:
         if event.kind == "policy":
             return "policy", "kind=policy: routed to policy memory"
         if event.kind == "correction":
+            # Corrections retain the type of the fact they revise. Entity
+            # hints provide the stable identity when the new wording only
+            # says that a resource has moved.
+            if any(
+                record.type == "resource"
+                for entity in entities
+                for record in self.store.by_entity(entity)
+            ):
+                return "resource", "kind=correction: matched existing resource entity"
+            marker = _contains(content, RESOURCE_MARKERS)
+            if marker:
+                return "resource", f"kind=correction: resource marker '{marker.strip()}'"
             return "preference", "kind=correction: routed to preference memory"
         marker = _contains(content, PREFERENCE_MARKERS)
         if marker and event.actor == "user":

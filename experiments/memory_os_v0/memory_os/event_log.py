@@ -39,6 +39,13 @@ class EventLog:
     # -- writing ------------------------------------------------------------
 
     def append(self, event: MemoryEvent) -> dict:
+        # An existing persisted log whose chain or anchor no longer verifies
+        # is evidence of tampering or loss. Do not add a new event and rewrite
+        # the anchor, which would make a truncated history appear healthy.
+        if self.path is not None:
+            valid, error = self.verify()
+            if not valid:
+                raise ValueError(f"event log integrity check failed; refusing append: {error}")
         payload = event.to_dict()
         prev_hash = self._entries[-1]["hash"] if self._entries else GENESIS
         entry = {
