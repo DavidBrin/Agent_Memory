@@ -47,6 +47,7 @@ class MemorySystem:
                 old = self.store.get(old_id)
                 if old is not None:
                     self.graph.index(old)
+        self.save()
         return decision, record
 
     def ask(self, query: str, as_of: datetime, **kwargs) -> ContextPacket:
@@ -67,6 +68,7 @@ class MemorySystem:
                 deleted_ids=removed,
             )
         )
+        self.save()
         return removed
 
     def save(self) -> None:

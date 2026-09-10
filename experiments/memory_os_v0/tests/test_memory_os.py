@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import sys
 import unittest
+import json
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -16,6 +17,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from memory_os import MemorySystem, make_event  # noqa: E402
 from memory_os.demo import run as run_demo  # noqa: E402
+from memory_os.event_log import EventLog  # noqa: E402
 from memory_os.schema import UTC  # noqa: E402
 
 T0 = datetime(2026, 4, 6, 9, 0, tzinfo=UTC)
@@ -246,6 +248,21 @@ class EventLogTests(unittest.TestCase):
 
 
 class PersistenceTests(unittest.TestCase):
+    def test_observations_survive_restart_without_an_explicit_save(self):
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            system = MemorySystem(root)
+            _, record = system.observe(
+                make_event(at(0), "s1", "user", "message", "I prefer concise summaries.")
+            )
+
+            reloaded = MemorySystem(root)
+
+            self.assertIsNotNone(record)
+            self.assertIsNotNone(reloaded.store.get(record.memory_id))
+
     def test_store_round_trips_through_disk(self):
         import tempfile
 
@@ -260,6 +277,39 @@ class PersistenceTests(unittest.TestCase):
             )
             self.assertEqual(reloaded.log.verify(), (True, None))
             self.assertEqual(reloaded.graph.summary(), first.graph.summary())
+
+
+class EventLogIntegrityTests(unittest.TestCase):
+    def test_verify_detects_tail_truncation(self):
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "events.jsonl"
+            log = EventLog(path)
+            log.append(make_event(at(0), "s1", "user", "message", "First durable fact."))
+            log.append(make_event(at(1), "s1", "user", "message", "Second durable fact."))
+            path.write_text("\n".join(path.read_text(encoding="utf-8").splitlines()[:-1]) + "\n", encoding="utf-8")
+
+            ok, error = EventLog(path).verify()
+
+            self.assertFalse(ok)
+            self.assertIn("anchor", error)
+
+    def test_verify_detects_sequence_tampering(self):
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "events.jsonl"
+            log = EventLog(path)
+            log.append(make_event(at(0), "s1", "user", "message", "First durable fact."))
+            entry = json.loads(path.read_text(encoding="utf-8"))
+            entry["seq"] = 99
+            path.write_text(json.dumps(entry) + "\n", encoding="utf-8")
+
+            ok, error = EventLog(path).verify()
+
+            self.assertFalse(ok)
+            self.assertIn("sequence", error)
 
 
 if __name__ == "__main__":
