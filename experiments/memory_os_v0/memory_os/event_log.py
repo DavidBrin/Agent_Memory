@@ -33,7 +33,7 @@ class EventLog:
         self._entries: list[dict] = []
         if self.path and self.path.exists():
             self._load()
-        if self.anchor_path and not self.anchor_path.exists():
+        if self.anchor_path and not self.anchor_path.exists() and not self._entries:
             self._write_anchor()
 
     # -- writing ------------------------------------------------------------
@@ -105,6 +105,8 @@ class EventLog:
                 return False, f"seq {entry['seq']}: content does not match hash"
             prev_hash = entry["hash"]
         anchor = self._read_anchor()
+        if self.path is not None and self._entries and anchor is None:
+            return False, "anchor is missing for an existing log"
         if anchor is not None and (
             anchor.get("count") != len(self._entries) or anchor.get("head_hash") != prev_hash
         ):

@@ -280,6 +280,21 @@ class PersistenceTests(unittest.TestCase):
 
 
 class EventLogIntegrityTests(unittest.TestCase):
+    def test_verify_detects_missing_anchor_on_existing_log(self):
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "events.jsonl"
+            log = EventLog(path)
+            log.append(make_event(at(0), "s1", "user", "message", "Durable fact."))
+            anchor_path = path.with_name(f"{path.name}.anchor.json")
+            anchor_path.unlink()
+
+            ok, error = EventLog(path).verify()
+
+            self.assertFalse(ok)
+            self.assertIn("anchor", error)
+
     def test_verify_detects_tail_truncation(self):
         import tempfile
 

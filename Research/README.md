@@ -12,6 +12,8 @@ A useful reading order is:
 4. Read [`architecture/memory_taxonomy.md`](architecture/memory_taxonomy.md), [`architecture/memory_hierarchy.md`](architecture/memory_hierarchy.md), and [`architecture/kv_cache_and_inference_memory.md`](architecture/kv_cache_and_inference_memory.md) for conceptual grounding.
 5. Read [`problems/pain_points.md`](problems/pain_points.md) for real-world user and system failures.
 6. Read [`proposed_solutions.md`](proposed_solutions.md) for the main synthesis proposal.
+7. Run the stdlib-only [`../experiments/memory_os_v0/`](../experiments/memory_os_v0/)
+   prototype for the proposed event log, write gate, temporal store, and retrieval flow.
 
 ## Canonical Repository Organization
 
