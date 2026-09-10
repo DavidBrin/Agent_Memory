@@ -244,17 +244,16 @@ class WriteGate:
             return "policy", "kind=policy: routed to policy memory"
         if event.kind == "correction":
             # Corrections retain the type of the fact they revise. Entity
-            # hints provide the stable identity when the new wording only
-            # says that a resource has moved.
-            if any(
-                record.type == "resource"
-                for entity in entities
-                for record in self.store.by_entity(entity)
-            ):
-                return "resource", "kind=correction: matched existing resource entity"
             marker = _contains(content, RESOURCE_MARKERS)
-            if marker:
-                return "resource", f"kind=correction: resource marker '{marker.strip()}'"
+            if marker and any(
+                record.type == "resource"
+                for hint in event.entity_hints
+                for record in self.store.by_entity(hint.lower())
+            ):
+                return "resource", (
+                    f"kind=correction: resource marker '{marker.strip()}' "
+                    "with matching resource identity"
+                )
             return "preference", "kind=correction: routed to preference memory"
         marker = _contains(content, PREFERENCE_MARKERS)
         if marker and event.actor == "user":

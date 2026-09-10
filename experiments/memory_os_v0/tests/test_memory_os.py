@@ -172,6 +172,38 @@ class TemporalTests(unittest.TestCase):
         self.assertIn("pricing_2027.xlsx", rendered)
         self.assertNotIn("pricing_2026.xlsx", rendered)
 
+    def test_preference_correction_does_not_supersede_resource_with_shared_hint(self):
+        system = MemorySystem()
+        _, resource = system.observe(
+            make_event(
+                at(0), "s1", "user", "message",
+                "The project reference lives at docs/project-reference.md",
+                entity_hints=("project_reference",),
+            )
+        )
+        _, preference = system.observe(
+            make_event(
+                at(1), "s1", "user", "message", "I prefer concise project notes.",
+                entity_hints=("project_reference",),
+            )
+        )
+        _, corrected = system.observe(
+            make_event(
+                at(20), "s2", "user", "correction", "I prefer detailed project notes.",
+                entity_hints=("project_reference",),
+            )
+        )
+
+        self.assertEqual(corrected.type, "preference")
+        self.assertIsNone(resource.superseded_by)
+        self.assertIsNone(resource.valid_until)
+        self.assertEqual(preference.superseded_by, corrected.memory_id)
+        self.assertEqual(corrected.supersedes, [preference.memory_id])
+        self.assertCountEqual(
+            [record.memory_id for record in system.store.visible(at(30))],
+            [resource.memory_id, corrected.memory_id],
+        )
+
 
 class RetrievalTests(unittest.TestCase):
     def setUp(self) -> None:
@@ -224,6 +256,30 @@ class RetrievalTests(unittest.TestCase):
 
 
 class DeletionTests(unittest.TestCase):
+    def test_forget_keeps_persistent_state_when_corrupt_log_rejects_deletion(self):
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            system = MemorySystem(root)
+            _, record = system.observe(
+                make_event(
+                    at(0), "s1", "user", "message", "I prefer concise summaries.",
+                    entity_hints=("summary_style",),
+                )
+            )
+            events_path = root / "events.jsonl"
+            events_path.write_text("", encoding="utf-8")
+
+            reloaded = MemorySystem(root)
+            with self.assertRaisesRegex(ValueError, "integrity"):
+                reloaded.forget(record.memory_id, at(1))
+
+            self.assertIn(record.memory_id, {r.memory_id for r in reloaded.store.visible(at(1))})
+            self.assertIn(record.memory_id, reloaded.graph.records_mentioning("summary_style", at(1)))
+            restarted = MemorySystem(root)
+            self.assertIn(record.memory_id, {r.memory_id for r in restarted.store.visible(at(1))})
+
     def test_deletion_takes_the_whole_version_chain(self):
         system = MemorySystem()
         _, old = system.observe(
