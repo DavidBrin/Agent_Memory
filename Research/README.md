@@ -14,7 +14,8 @@ A useful reading order is:
 6. Read [`evolution.md`](evolution.md) for how the field arrived at its current shape.
 7. Read [`current_approaches.md`](current_approaches.md) for what is actually built today.
 8. Read [`proposed_solutions.md`](proposed_solutions.md) for the main synthesis proposal.
-9. See [`../experiments/`](../experiments/) for the working prototype of that proposal.
+9. Run the stdlib-only [`../experiments/memory_os_v0/`](../experiments/memory_os_v0/)
+    prototype for the proposed event log, write gate, temporal store, and retrieval flow.
 
 ## Canonical Repository Organization
 

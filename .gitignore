@@ -2,6 +2,7 @@
 graphify-out/
 raw/
 .codex/
+.worktrees/
 .vscode/
 .cursor/
 __pycache__/

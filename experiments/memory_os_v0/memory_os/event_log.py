@@ -33,12 +33,19 @@ class EventLog:
         self._entries: list[dict] = []
         if self.path and self.path.exists():
             self._load()
-        if self.anchor_path and not self.anchor_path.exists():
+        if self.anchor_path and not self.anchor_path.exists() and not self._entries:
             self._write_anchor()
 
     # -- writing ------------------------------------------------------------
 
     def append(self, event: MemoryEvent) -> dict:
+        # An existing persisted log whose chain or anchor no longer verifies
+        # is evidence of tampering or loss. Do not add a new event and rewrite
+        # the anchor, which would make a truncated history appear healthy.
+        if self.path is not None:
+            valid, error = self.verify()
+            if not valid:
+                raise ValueError(f"event log integrity check failed; refusing append: {error}")
         payload = event.to_dict()
         prev_hash = self._entries[-1]["hash"] if self._entries else GENESIS
         entry = {
@@ -52,7 +59,8 @@ class EventLog:
             self.path.parent.mkdir(parents=True, exist_ok=True)
             with self.path.open("a", encoding="utf-8") as handle:
                 handle.write(json.dumps(entry, sort_keys=True) + "\n")
-            self._write_anchor()
+            if self.anchor_path and self.anchor_path.exists():
+                self._write_anchor()
         return entry
 
     # -- reading ------------------------------------------------------------
@@ -105,6 +113,8 @@ class EventLog:
                 return False, f"seq {entry['seq']}: content does not match hash"
             prev_hash = entry["hash"]
         anchor = self._read_anchor()
+        if self.path is not None and self._entries and anchor is None:
+            return False, "anchor is missing for an existing log"
         if anchor is not None and (
             anchor.get("count") != len(self._entries) or anchor.get("head_hash") != prev_hash
         ):

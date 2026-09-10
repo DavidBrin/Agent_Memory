@@ -55,6 +55,10 @@ class MemorySystem:
 
     def forget(self, memory_id: str, at: datetime, reason: str = "user request") -> list[str]:
         """User-initiated deletion, propagated and logged."""
+        if self.log.path is not None:
+            valid, error = self.log.verify()
+            if not valid:
+                raise ValueError(f"event log integrity check failed; refusing deletion: {error}")
         removed = self.store.delete(memory_id, cascade=True)
         for dead in removed:
             self.graph.drop(dead)
