@@ -11,7 +11,10 @@ A useful reading order is:
 3. Read [`papers/recent_papers.md`](papers/recent_papers.md) for 2024-2026 developments.
 4. Read [`architecture/memory_taxonomy.md`](architecture/memory_taxonomy.md), [`architecture/memory_hierarchy.md`](architecture/memory_hierarchy.md), and [`architecture/kv_cache_and_inference_memory.md`](architecture/kv_cache_and_inference_memory.md) for conceptual grounding.
 5. Read [`problems/pain_points.md`](problems/pain_points.md) for real-world user and system failures.
-6. Read [`proposed_solutions.md`](proposed_solutions.md) for the main synthesis proposal.
+6. Read [`evolution.md`](evolution.md) for how the field arrived at its current shape.
+7. Read [`current_approaches.md`](current_approaches.md) for what is actually built today.
+8. Read [`proposed_solutions.md`](proposed_solutions.md) for the main synthesis proposal.
+9. See [`../experiments/`](../experiments/) for the working prototype of that proposal.
 
 ## Canonical Repository Organization
 
@@ -29,18 +32,33 @@ Research/
 │   └── vector_vs_graph_memory.md
 ├── problems/
 │   └── pain_points.md
-├── pain-points.md
-├── proposed_solutions.md
-├── current_approaches.md
-├── papers_summaries.md
 ├── evolution.md
-├── kv_cache_inference.md
-└── memory_taxonomy.md
+├── current_approaches.md
+└── proposed_solutions.md
 ```
 
 ## Deduplication Rule
 
-All long-form research artifacts should live under `Research/`. Top-level files should be limited to project navigation and repository-level metadata.
+All long-form research artifacts should live under `Research/`. Top-level repository files should be limited to project navigation and repository-level metadata.
+
+Within `Research/`, the layout rule is:
+
+- **Subfolders hold topic-scoped notes.** A note that is primarily about papers, architecture, or observed problems belongs in `papers/`, `architecture/`, or `problems/`.
+- **The root holds cross-cutting syntheses.** `evolution.md`, `current_approaches.md`, and `proposed_solutions.md` each draw on all three subfolders, so they have no natural home inside any one of them.
+- **A topic has exactly one canonical file.** Do not create a root-level file that shadows a subfolder note.
+
+### Removed parallel files
+
+An earlier consolidation left six empty root-level files. Four of them shadowed canonical notes and were removed rather than filled, because keeping both copies is exactly what the deduplication rule exists to prevent. If you followed an old link, the canonical locations are:
+
+| Removed | Canonical location |
+|---|---|
+| `pain-points.md` | [`problems/pain_points.md`](problems/pain_points.md) |
+| `kv_cache_inference.md` | [`architecture/kv_cache_and_inference_memory.md`](architecture/kv_cache_and_inference_memory.md) |
+| `memory_taxonomy.md` | [`architecture/memory_taxonomy.md`](architecture/memory_taxonomy.md) |
+| `papers_summaries.md` | the [`papers/`](papers/) folder as a whole |
+
+The remaining two, `current_approaches.md` and `evolution.md`, had no canonical counterpart, so they were written as real notes instead of removed.
 
 ## Current Thesis
 
