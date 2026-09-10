@@ -24,6 +24,7 @@ Important entry points:
 - [`Research/architecture/kv_cache_and_inference_memory.md`](Research/architecture/kv_cache_and_inference_memory.md) — KV cache and inference-time memory
 - [`Research/problems/pain_points.md`](Research/problems/pain_points.md) — real-world problems for agent users
 - [`Research/proposed_solutions.md`](Research/proposed_solutions.md) — proposed memory operating-system architecture
+- [`experiments/`](experiments/) — runnable v0 prototype of that proposal
 
 ## Graphify Indexing
 
@@ -136,4 +137,4 @@ The next generation of agent memory systems will likely be:
 
 ## Status
 
-Early-stage research repository. The current structure is consolidated under `Research/` so papers, architecture notes, problem analyses, and proposed solutions do not diverge across parallel folders.
+Early-stage research repository. Long-form notes live under `Research/`. A first runnable prototype of the proposed Memory OS is in [`experiments/memory_os_v0/`](experiments/memory_os_v0/) — see [`experiments/README.md`](experiments/README.md).

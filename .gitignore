@@ -3,3 +3,8 @@ graphify-out/
 raw/
 .codex/
 .worktrees/
+.vscode/
+.cursor/
+__pycache__/
+*.py[cod]
+.pytest_cache/
